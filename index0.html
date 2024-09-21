@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traffic Congestion Predictor Using GraphSAGE-Based GNN</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        input[type="text"], input[type="datetime-local"] {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            margin-top: 20px;
+        }
+        .error {
+            color: red;
+        }
+        .success {
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Traffic Congestion Predictor</h1>
+        <form id="predictForm">
+            <label for="latitude">Latitude:</label>
+            <input type="text" id="latitude" name="latitude" required>
+            
+            <label for="longitude">Longitude:</label>
+            <input type="text" id="longitude" name="longitude" required>
+            
+            <label for="time_of_travel">Time of Travel:</label>
+            <input type="datetime-local" id="time_of_travel" name="time_of_travel" required>
+            
+            <button type="submit">Predict Congestion</button>
+        </form>
+        
+        <div id="result" class="result"></div>
+    </div>
+
+    <script>
+        document.getElementById('predictForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const latitude = document.getElementById('latitude').value;
+            const longitude = document.getElementById('longitude').value;
+            const time_of_travel = document.getElementById('time_of_travel').value;
+
+            const data = {
+                latitude: latitude,
+                longitude: longitude,
+                time_of_travel: time_of_travel
+            };
+
+            fetch('/predict_congestion', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+                const resultDiv = document.getElementById('result');
+                resultDiv.innerHTML = '';
+
+                if (result.error) {
+                    resultDiv.innerHTML = `<p class="error">Error: ${result.error}</p>`;
+                } else {
+                    resultDiv.innerHTML = `
+                        <h2>Prediction Result</h2>
+                        <p><strong>Predicted Traffic Congestion Level:</strong> ${result.predicted_congestion[0]}</p>
+                    `;
+                }
+            })
+            .catch(error => {
+                console.error("Fetch error:", error);
+                document.getElementById('result').innerHTML = `<p class="error">An error occurred: ${error.message}</p>`;
+            });
+        });
+    </script>
+</body>
+</html>

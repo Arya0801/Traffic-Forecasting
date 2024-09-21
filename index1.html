@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traffic Prediction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h1>Traffic Prediction</h1>
+    <form id="predictForm">
+        <label for="data">Input Data (JSON format):</label>
+        <textarea id="data" name="data" rows="10" cols="50" placeholder='[{"data": [[...]]}]'></textarea>
+        <button type="button" onclick="submitData()">Predict</button>
+    </form>
+    <h2>Prediction Result:</h2>
+    <pre id="result"></pre>
+    
+    <script>
+        function submitData() {
+            const data = document.getElementById('data').value;
+            fetch('/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({data: JSON.parse(data)})
+            })
+            .then(response => response.json())
+            .then(result => {
+                document.getElementById('result').textContent = JSON.stringify(result, null, 2);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>

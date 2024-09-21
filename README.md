@@ -1,5 +1,6 @@
 # Traffic Forecasting
 In this project I worked on two different models for the same task i.e. traffic forecasting, to compare and know which one gives the best results so that it can be used for route planning.
+I used PeMSD8 dataset, collected from the California Performance Measurement System (PeMS),includes traffic data from 170 sensors across 8 different regions and downloaded from ASTGCN.
 
 Model Description
 
